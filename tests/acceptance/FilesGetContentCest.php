@@ -15,9 +15,9 @@ class FilesGetContentCest
     {
         $I->sendGET('wrong_endpoint');
         $I->seeResponseCodeIs(404);
-        $I->seeResponseEquals(['error' => [
+        $I->seeResponseEquals(json_encode(['error' => [
             'code' => 404,
             'message' => 'Resource does not exist.'
-        ]]);
+        ]]));
     }
 }
