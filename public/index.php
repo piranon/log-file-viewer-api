@@ -3,6 +3,7 @@ require '../vendor/autoload.php';
 
 use Slim\App;
 use LogFileViewer\Controller\FileController;
+use LogFileViewer\Validator\GetFileContentValidator;
 
 $env = getenv('APP_ENV') ? : 'dev';
 
@@ -18,6 +19,9 @@ $container['notFoundHandler'] = function () {
             'message' => 'Resource does not exist.'
         ]], 404);
     };
+};
+$container['validate.getFileContent'] = function () {
+    return new GetFileContentValidator();
 };
 
 $app->get('/files[/{filePath:.*}]', FileController::class . ':getContentAction');

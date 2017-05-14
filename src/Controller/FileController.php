@@ -2,9 +2,10 @@
 
 namespace LogFileViewer\Controller;
 
+use LogFileViewer\Exception\VerifiedPathFileException;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Container\ContainerInterface;
 
 /**
  * Class FileController
@@ -32,13 +33,16 @@ class FileController
      */
     public function getContentAction(Request $request, Response $response) {
         $filePath = $request->getAttribute('filePath');
-        $segments = explode('/', $filePath);
-        if (!isset($segments[0]) || $segments[0] !== 'var' || !isset($segments[1]) || $segments[1] !== 'tmp') {
-            return $response->withJson(['error' => [
-                'code' => 400,
-                'message' => 'Path file must under /var/tmp'
-            ]], 400);
+
+        try {
+            $this->container->get('validate.getFileContent')->verifiedPathFile($filePath);
+        } catch (VerifiedPathFileException $e) {
+            return $response->withJson(
+                ['error' => ['code' => $e->getCode(), 'message' => $e->getMessage()]],
+                $e->getCode()
+            );
         }
+
 
         $filePath = '/' . $filePath;
 
