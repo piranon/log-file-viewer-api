@@ -39,5 +39,14 @@ class FileController
                 'message' => 'Path file must under /var/tmp'
             ]], 400);
         }
+
+        $filePath = '/' . $filePath;
+
+        if (!file_exists($filePath)) {
+            return $response->withJson(['error' => [
+                'code' => 404,
+                'message' => 'File not found.'
+            ]], 404);
+        }
     }
 }

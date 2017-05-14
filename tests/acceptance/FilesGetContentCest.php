@@ -30,4 +30,14 @@ class FilesGetContentCest
             'message' => 'Path file must under /var/tmp'
         ]]));
     }
+
+    public function getNotExistFileTest(AcceptanceTester $I)
+    {
+        $I->sendGET('files/var/tmp/not_exist_file');
+        $I->seeResponseCodeIs(404);
+        $I->seeResponseEquals(json_encode(['error' => [
+            'code' => 404,
+            'message' => 'File not found.'
+        ]]));
+    }
 }
