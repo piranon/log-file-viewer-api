@@ -1,6 +1,7 @@
 <?php
 require '../vendor/autoload.php';
 
+use Bairwell\MiddlewareCors;
 use Slim\App;
 use LogFileViewer\Controller\FileController;
 use LogFileViewer\Service\GetFileContentService;
@@ -10,6 +11,8 @@ $env = getenv('APP_ENV') ? : 'dev';
 
 $settings = require __DIR__ . "/../app/setting/settings.$env.php";
 $app = new App($settings);
+
+$app->add(new MiddlewareCors());
 
 // Fetch DI Container
 $container = $app->getContainer();
