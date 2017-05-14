@@ -36,7 +36,10 @@ class FileController
     public function getContentAction(Request $request, Response $response)
     {
         $filePath = $request->getAttribute('filePath');
-        $filePath = '/' . $filePath;
+
+        if (stristr(PHP_OS, 'LINUX') OR stristr(PHP_OS, 'DAR')) {
+            $filePath = '/' . $filePath;
+        }
 
         /** @var GetFileContentValidator $getFileContentValidator */
         $getFileContentValidator = $this->container->get('validate.getFileContent');
@@ -55,7 +58,7 @@ class FileController
 
         /** @var GetFileContentService $getFileContentService */
         $getFileContentService = $this->container->get('service.getFileContent');
-        $responseData = $getFileContentService->getLineOfFileContent($filePath, $lines[0], $lines[1]);
+        $responseData = $getFileContentService->getLineOfFileContent($filePath, (int)$lines[0], (int)$lines[1]);
 
 
         return $response->withJson($responseData, 200);

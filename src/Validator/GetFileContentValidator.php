@@ -12,22 +12,62 @@ use LogFileViewer\Exception\VerifiedPathFileException;
 class GetFileContentValidator
 {
     /**
-     * @param $pathToFile
+     * @param string $pathToFile
+     * @return bool
      * @throws VerifiedPathFileException
      */
     public function verifiedPathFile($pathToFile)
+    {
+        if (stristr(PHP_OS, 'LINUX') OR stristr(PHP_OS, 'DAR')) {
+            $this->verifiedUnixPathFile($pathToFile);
+        } else {
+            $this->verifiedWindowsPathFile($pathToFile);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $pathToFile
+     * @return bool
+     * @throws VerifiedPathFileException
+     */
+    public function verifiedUnixPathFile($pathToFile)
     {
         $pathToFile = substr($pathToFile, 1);
         $segments = explode('/', $pathToFile);
         if (!isset($segments[0]) || $segments[0] !== 'var' || !isset($segments[1]) || $segments[1] !== 'tmp') {
             throw new VerifiedPathFileException();
         }
+
+        return true;
     }
 
+    /**
+     * @param string $pathToFile
+     * @return bool
+     * @throws VerifiedPathFileException
+     */
+    public function verifiedWindowsPathFile($pathToFile)
+    {
+        if (substr($pathToFile, 0, 7) !== 'C:\temp') {
+            throw new VerifiedPathFileException();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $pathToFile
+     * @return bool
+     * @throws FileNotFoundException
+     */
     public function isFileExists($pathToFile)
     {
         if (!file_exists($pathToFile)) {
             throw new FileNotFoundException();
         }
+
+        return true;
     }
 }
