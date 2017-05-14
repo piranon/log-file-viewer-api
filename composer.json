@@ -1,4 +1,9 @@
 {
+    "autoload": {
+        "psr-4": {
+            "LogFileViewer\\": "src/"
+        }
+    },
     "require": {
         "slim/slim": "^3.0",
         "davidepastore/slim-config": "^0.1.1"
