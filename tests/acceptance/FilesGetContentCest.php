@@ -20,4 +20,14 @@ class FilesGetContentCest
             'message' => 'Resource does not exist.'
         ]]));
     }
+
+    public function getWrongPathTest(AcceptanceTester $I)
+    {
+        $I->sendGET('files/etc/nginx/conf.d/default.conf');
+        $I->seeResponseCodeIs(400);
+        $I->seeResponseEquals(json_encode(['error' => [
+            'code' => 400,
+            'message' => 'Path file must under /var/tmp'
+        ]]));
+    }
 }
