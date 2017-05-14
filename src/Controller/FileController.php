@@ -49,11 +49,13 @@ class FileController
             ]], 404);
         }
 
+        $lines = explode(',', $request->getQueryParam('lines', '0,10'));
+
         $f = fopen($filePath, 'r');
         $contents = [];
         $lineNumber = 0;
-        $offset = 1;
-        $limit = 10;
+        $offset = (int) $lines[0];
+        $limit = (int) $lines[1];
 
         while ($line = fgets($f)) {
             $lineNumber++;
