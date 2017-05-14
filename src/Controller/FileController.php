@@ -48,5 +48,23 @@ class FileController
                 'message' => 'File not found.'
             ]], 404);
         }
+
+        $f = fopen($filePath, 'r');
+        $contents = [];
+        $lineNumber = 0;
+        $offset = 1;
+        $limit = 10;
+
+        while ($line = fgets($f)) {
+            $lineNumber++;
+            if ($lineNumber >= $offset && $lineNumber <= $limit) {
+                $contents[] = ['line' => $lineNumber, 'text' => trim($line)];
+            }
+        }
+
+        fclose($f);
+
+        return $response
+            ->withJson(['data' => $contents, 'total_count' => $lineNumber], 200);
     }
 }
