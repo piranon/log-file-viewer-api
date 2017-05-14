@@ -16,7 +16,7 @@ class VerifiedPathFileException extends \Exception
      */
     public function __construct($message = null, $code = 400, \Exception $previous = null)
     {
-        $message = $message ?: 'Path file must under /var/tmp';
+        $message = $message ?: 'Path file must be /var/tmp in Unix or C:\temp in Windows';
         parent::__construct($message, $code, $previous);
     }
 }
