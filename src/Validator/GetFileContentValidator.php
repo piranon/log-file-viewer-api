@@ -64,7 +64,7 @@ class GetFileContentValidator
      */
     public function isFileExists($pathToFile)
     {
-        if (!file_exists($pathToFile)) {
+        if (!is_file($pathToFile)) {
             throw new FileNotFoundException();
         }
 
