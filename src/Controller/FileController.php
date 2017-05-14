@@ -2,7 +2,7 @@
 
 namespace LogFileViewer\Controller;
 
-use LogFileViewer\Exception\VerifiedPathFileException;
+use LogFileViewer\Service\GetFileContentService;
 use LogFileViewer\Validator\GetFileContentValidator;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -23,16 +23,18 @@ class FileController
      * FileController constructor.
      * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container) {
+    public function __construct(ContainerInterface $container)
+    {
         $this->container = $container;
     }
 
     /**
      * @param Request $request
      * @param Response $response
-     * @return mixed
+     * @return Response
      */
-    public function getContentAction(Request $request, Response $response) {
+    public function getContentAction(Request $request, Response $response)
+    {
         $filePath = $request->getAttribute('filePath');
         $filePath = '/' . $filePath;
 
@@ -51,22 +53,11 @@ class FileController
 
         $lines = explode(',', $request->getQueryParam('lines', '0,10'));
 
-        $f = fopen($filePath, 'r');
-        $contents = [];
-        $lineNumber = 0;
-        $offset = (int) $lines[0];
-        $limit = (int) $lines[1];
+        /** @var GetFileContentService $getFileContentService */
+        $getFileContentService = $this->container->get('service.getFileContent');
+        $responseData = $getFileContentService->getLineOfFileContent($filePath, $lines[0], $lines[1]);
 
-        while ($line = fgets($f)) {
-            $lineNumber++;
-            if ($lineNumber >= $offset && $lineNumber <= $limit) {
-                $contents[] = ['line' => $lineNumber, 'text' => trim($line)];
-            }
-        }
 
-        fclose($f);
-
-        return $response
-            ->withJson(['data' => $contents, 'total_count' => $lineNumber], 200);
+        return $response->withJson($responseData, 200);
     }
 }
