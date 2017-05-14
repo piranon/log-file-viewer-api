@@ -3,6 +3,7 @@
 namespace LogFileViewer\Controller;
 
 use LogFileViewer\Exception\VerifiedPathFileException;
+use LogFileViewer\Validator\GetFileContentValidator;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -33,24 +34,19 @@ class FileController
      */
     public function getContentAction(Request $request, Response $response) {
         $filePath = $request->getAttribute('filePath');
+        $filePath = '/' . $filePath;
+
+        /** @var GetFileContentValidator $getFileContentValidator */
+        $getFileContentValidator = $this->container->get('validate.getFileContent');
 
         try {
-            $this->container->get('validate.getFileContent')->verifiedPathFile($filePath);
-        } catch (VerifiedPathFileException $e) {
+            $getFileContentValidator->verifiedPathFile($filePath);
+            $getFileContentValidator->isFileExists($filePath);
+        } catch (\Exception $e) {
             return $response->withJson(
                 ['error' => ['code' => $e->getCode(), 'message' => $e->getMessage()]],
                 $e->getCode()
             );
-        }
-
-
-        $filePath = '/' . $filePath;
-
-        if (!file_exists($filePath)) {
-            return $response->withJson(['error' => [
-                'code' => 404,
-                'message' => 'File not found.'
-            ]], 404);
         }
 
         $lines = explode(',', $request->getQueryParam('lines', '0,10'));
