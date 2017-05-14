@@ -1,18 +1,14 @@
 <?php
 require '../vendor/autoload.php';
 
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
+$env = getenv('APP_ENV') ? : 'dev';
 
-$config = [
-    'settings' => [
-        'displayErrorDetails' => true,
-    ]
-];
+$settings = require __DIR__ . "/../app/setting/settings.$env.php";
+$app = new \Slim\App($settings);
 
-$container = new \Slim\Container($config);
+// Fetch DI Container
+$container = $app->getContainer();
 
-//Override the default Not Found Handler
 $container['notFoundHandler'] = function () {
     return function ($request, $response) {
         return $response->withJson(['error' => [
@@ -21,7 +17,5 @@ $container['notFoundHandler'] = function () {
         ]], 404);
     };
 };
-
-$app = new \Slim\App($container);
 
 $app->run();
