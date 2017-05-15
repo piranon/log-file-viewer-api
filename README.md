@@ -10,7 +10,7 @@ $ cd log-file-viewer-api
 $ composer install
 ```
 
-### Running Dev Server
+## Running Dev Server
 
 ```
 $ cd log-file-viewer-api
@@ -19,6 +19,12 @@ $ docker-composer up --build -d
 ```
 
 and access dev server via localhost:8081
+
+## Running the tests
+
+```
+$ ./vendor/bin/codecept run
+```
 
 ## Request & Response Examples
 
