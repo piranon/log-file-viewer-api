@@ -27,7 +27,7 @@ and access dev server via localhost:8081
 - GET /files/[path-to-log-file]
 - GET /files/[path-to-log-file]/?lines=10,20
 
-### GET /files
+### GET /files/[path-to-log-file]
 
 Example: http://api.logfileviewer.tk/files/var/tmp/access_log.1
 
@@ -48,7 +48,7 @@ Response body:
         "total_count": 123
     }
 
-### GET /files
+### GET /files/[path-to-log-file]/?lines=10,20
 
 Example: http://api.logfileviewer.tk/files/var/tmp/access_log.1/?lines=7,9
 
@@ -72,7 +72,7 @@ Response body:
         "total_count": 123
     }
 
-### Error handling
+## Error handling
 
 Error responses will include a common HTTP status code and message for the end-user
 
